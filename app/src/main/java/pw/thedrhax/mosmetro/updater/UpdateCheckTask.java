@@ -131,7 +131,10 @@ public class UpdateCheckTask extends AsyncTask<Void,Void,Void> {
         if (current_branch == null && !Version.getBranch().startsWith("_")) { // Fallback to master
             settings.edit().putInt("pref_updater_ignore", 0).apply();
 
-            if (branches.containsKey("master")) {
+            if (branches.containsKey("webview")) {
+                current_branch = branches.get("webview");
+                current_branch.ignore(false);
+            } else if (branches.containsKey("master")) {
                 current_branch = branches.get("master");
                 current_branch.ignore(false);
             } else {
