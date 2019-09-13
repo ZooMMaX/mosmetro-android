@@ -29,6 +29,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.acra.ACRA;
+import org.acra.ErrorReporter;
+
 import pw.thedrhax.mosmetro.R;
 import pw.thedrhax.mosmetro.authenticator.providers.Enforta;
 import pw.thedrhax.mosmetro.authenticator.providers.MAInet;
@@ -243,6 +246,9 @@ public abstract class Provider extends LinkedList<Task> {
             }
         }
 
+        ErrorReporter acra = ACRA.getErrorReporter();
+        acra.putCustomData("stage_1", unrel.toString());
+
         StringBuilder state = new StringBuilder();
         state.append('[');
         state.append(unrel.getResponseCode()).append(", ");
@@ -250,18 +256,26 @@ public abstract class Provider extends LinkedList<Task> {
             state.append("null");
         } else {
             state.append(rel_https.getResponseCode());
+            acra.putCustomData("stage_2", rel_https.toString());
         }
         state.append(", ");
         if (rel_http == null) {
             state.append("null");
         } else {
             state.append(rel_http.getResponseCode());
+            acra.putCustomData("stage_3", rel_http.toString());
         }
         state.append(']');
 
         Logger.log(Logger.LEVEL.DEBUG,
                 "Provider | generate_204() | Unexpected state: " + state.toString()
         );
+
+        acra.handleSilentException(new Exception(
+            "Unexpected state in generate_204: " + state.toString()
+        ));
+        acra.clearCustomData();
+
         return empty;
     }
 
