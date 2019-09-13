@@ -143,23 +143,8 @@ public abstract class Provider extends LinkedList<Task> {
      */
     @NonNull public static Provider find(Context context, Listener<Boolean> running) {
         Logger.log(context.getString(R.string.auth_provider_check));
-
         ParsedResponse response = generate_204(context, running, true);
         Provider result = Provider.find(context, response);
-
-        if (result instanceof Unknown && response.getResponseCode() != 204) {
-            Logger.log(Logger.LEVEL.DEBUG, response.toString());
-            Logger.log(context.getString(R.string.error,
-                    context.getString(R.string.auth_error_provider)
-            ));
-            Provider fallback = find(context, new ParsedResponse(
-                    "<meta http-equiv=\"refresh\" content=\"0; " +
-                            "URL=http://welcome.wi-fi.ru/\" />"
-            ));
-            Logger.log(context.getString(R.string.auth_provider_assume, fallback.getName()));
-            return fallback;
-        }
-
         return result;
     }
 
