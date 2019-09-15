@@ -215,16 +215,14 @@ public abstract class Provider extends LinkedList<Task> {
             // network is most probably unreachable
             return empty;
         }
-
+        
         // Reliable HTTPS check
         ParsedResponse rel_https = generate_204(client,
                 "https://" + random.choose(GENERATE_204_RELIABLE)
         );
-        
+
         // Reliable HTTP check
         ParsedResponse rel_http = null;
-
-        ErrorReporter acra = ACRA.getErrorReporter();
 
         if (unrel.getResponseCode() == 204) {
             if (rel_https == null) {
@@ -244,13 +242,11 @@ public abstract class Provider extends LinkedList<Task> {
             if (rel_https == null) {
                 return unrel; // confirmed negative
             } else if (rel_https.getResponseCode() == 204) {
-                acra.putCustomData("stage_1", unrel.toString());
-                acra.handleSilentException(new Exception("False negative in generate_204"));
-                acra.clearCustomData();
                 return false_negatives ? unrel : rel_https; // false negative
             }
         }
 
+        ErrorReporter acra = ACRA.getErrorReporter();
         acra.putCustomData("stage_1", unrel.toString());
 
         StringBuilder state = new StringBuilder();
