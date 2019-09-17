@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.acra.ACRA;
+
 import pw.thedrhax.mosmetro.R;
 import pw.thedrhax.mosmetro.authenticator.providers.Enforta;
 import pw.thedrhax.mosmetro.authenticator.providers.MAInet;
@@ -239,6 +241,10 @@ public abstract class Provider extends LinkedList<Task> {
             if (rel_https == null) {
                 return unrel; // confirmed negative
             } else if (rel_https.getResponseCode() == 204) {
+                ACRA.getErrorReporter().putCustomData(
+                        "gen_204 false negative",
+                        unrel.toString()
+                );
                 return false_negatives ? unrel : rel_https; // false negative
             }
         }
