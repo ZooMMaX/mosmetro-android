@@ -27,9 +27,6 @@ import android.preference.PreferenceManager;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.acra.ACRA;
-import org.acra.ErrorReporter;
-
 import pw.thedrhax.mosmetro.R;
 import pw.thedrhax.mosmetro.activities.DebugActivity;
 import pw.thedrhax.mosmetro.activities.SafeViewActivity;
@@ -242,16 +239,6 @@ public class ConnectionService extends IntentService {
             }
 
             result = provider.start();
-
-            ErrorReporter acra = ACRA.getErrorReporter();
-            String field = acra.getCustomData("gen_204 false negative");
-            if (field != null) {
-                acra.handleSilentException(new Exception(
-                        "False negative in generate_204 " + 
-                        "(RESULT = " + result.toString() + ")"
-                ));
-                acra.clearCustomData();
-            }
 
             if (result == Provider.RESULT.NOT_REGISTERED) break;
             if (from_shortcut) break;
